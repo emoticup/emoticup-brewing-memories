@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How was your EmotiCup?</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color:lemonchiffon;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 70px auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        h2 {
+            color: black;
+        }
+
+        img {
+            display: block;
+            margin: 0 auto;
+            width: 300px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color:black;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 14px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .emoticons {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+        }
+
+        .emoticon {
+            font-size: 80px;
+            cursor: pointer;
+        }
+
+        .emoticon:hover {
+            transform: scale(1.2);
+        }
+
+        #selected-emoticon {
+            font-size: 80px;
+            margin-bottom: 16px;
+        }
+
+        .preference-section {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .preference-emoticon {
+            font-size: 90px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .preference-emoticon:hover {
+            transform: scale(1.2);
+        }
+
+        .choice-radios {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 16px;
+        }
+
+        .choice-radio {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .small-text-area {
+            width: 40%; /* Decreased width */
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid #ccc;
+            border-radius: 1px;
+            box-sizing: border-box; 
+            display: block; /* Center the comment box */
+            margin: 0 auto;
+          
+        }
+        
+        .dropdown-container {
+            margin-top: 10px;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px;
+            height: 50px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        p {
+            text-align: center;
+            color:green;
+            font-size: 18px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            font-style: italic;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        /* Additional styles for the feedback section */
+        .feedback-section,
+        .beverage-section {
+            display: none;
+        }
+
+        /* Additional style to show beverage section */
+        .beverage-section.show {
+            display: block;
+        }
+        /* ... (Your existing styles) ... */
+
+.bottom-corner-section {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.left-bottom-corner,
+.right-bottom-corner {
+    width: 28%; /* Adjust the width as needed */
+}
+
+.left-bottom-corner label,
+.right-bottom-corner label {
+    display: block;
+    margin-bottom: 3px;
+    color: #555;
+    font-weight: bold;
+}
+.back-button {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: #28a745; /* Green background color */
+    color: white; /* White text color */
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    text-decoration: none; /* Remove underline from the link */
+}
+
+.back-button:hover {
+    background-color: #218838; /* Darker green color on hover */
+}
+/* ... (Your existing styles) ... */
+
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <img src="emoticuplogo.png" alt="EmotiCup Logo">
+
+        <!-- Title "How was your EmotiCup?" -->
+        <h2>How was your emoticup?</h2>
+
+        <!-- Separate section for Happy and Unhappy emoticons -->
+        <form id="submitForm">
+            <div class="preference-section">
+                <span class="preference-emoticon" onclick="selectEmoticon('😄')">😄</span>
+                <span class="preference-emoticon" onclick="selectEmoticon('😞')">😞</span>
+            </div>
+
+            <!-- Radio buttons for Happy and Unhappy -->
+            <div class="choice-radios">
+                <label class="choice-radio">
+                    <input type="radio" name="Preference" value="Happy" onclick="showBeverageSection()"> Happy
+                </label>
+                <label class="choice-radio">
+                    <input type="radio" name="Preference" value="Unhappy" onclick="showFeedbackSection()"> Unhappy
+                </label>
+            </div>
+
+            <!-- Hidden selected emoticon field -->
+            <input type="hidden" id="selected-emoticon-field" name="selectedEmoticon" value="">
+            <!-- Selected emoticon display -->
+            <div id="selected-emoticon"></div>
+
+            <!-- Beverage section (hidden by default) -->
+            <div class="beverage-section" id="beverageSection">
+                <h3>Choose your beverage</h3>
+                <div class="emoticons">
+                    <span class="emoticon" onclick="selectBeverage('☕')">☕</span>
+                    <span class="emoticon" onclick="selectBeverage('☕')">☕</span>
+                </div>
+                <!-- Radio buttons for Tea and Coffee -->
+                <div class="choice-radios">
+                    <label class="choice-radio">
+                        <input type="radio" name="Beverage" value="Tea"> Tea
+                    </label>
+                    <label class="choice-radio">
+                        <input type="radio" name="Beverage" value="Coffee"> Coffee
+                    </label>
+                </div>
+            </div>
+
+            
+        <!-- Feedback section (hidden by default) -->
+        <div class="feedback-section" id="feedbackSection">
+            <h3>Please select</h3>
+            <div class="choice-radios">
+                <label class="choice-radio">
+                    <input type="radio" name="FeedbackType" value="quality"> Quality
+                </label>
+                <label class="choice-radio">
+                    <input type="radio" name="FeedbackType" value="quantity"> Quantity
+                </label>
+                <label class="choice-radio">
+                    <input type="radio" name="FeedbackType" value="service"> Service
+                </label>
+            </div>
+        </div>
+       
+
+            <!-- Small text area for Comments -->
+            <textarea id="comments" name="Comments" class="small-text-area" placeholder="Comments, if any!"></textarea>
+            
+            <!-- "Submit" button -->
+            <button type="button" onclick="submitForm()">Submit</button>
+            <div class="bottom-corner-section">
+                <div class="left-bottom-corner">
+                    <label for="name">Employee Name:</label>
+                    <input type="text" id="name" name="Name" class="small-text-area" placeholder="Enter your Employee Name">
+                </div>
+                <div class="right-bottom-corner">
+                    <label for="employeeId">Employee ID:</label>
+                    <input type="text" id="employeeId" name="EmployeeId" class="small-text-area" placeholder="Enter your Employee ID">
+                </div>
+            </div>
+            <p>Thank you for your valuable time!</p>
+           
+        </form>
+ <!-- Button to redirect to next page -->
+ <a href="companyoption2.html" class="back-button" style="position: fixed; bottom: 70px; left: 20px;">Back</a>
+        <!-- Selected emoticon display -->
+        <div id="selected-emoticon"></div>
+
+        <script>
+            // Function to handle the selection of emoticons
+            function selectEmoticon(emoticon) {
+                document.getElementById('selected-emoticon-field').value = emoticon;
+                document.getElementById('selected-emoticon').innerText = emoticon;
+
+                // If "Unhappy" is selected, show the additional feedback section
+                if (emoticon === '😢') {
+                    showFeedbackSection();
+                } else {
+                    hideFeedbackSection();
+                }
+
+                // If "Happy" is selected, hide the beverage section
+                if (emoticon === '😊') {
+                    hideBeverageSection();
+                }
+            }
+
+            // Function to show the feedback section
+            function showFeedbackSection() {
+                document.getElementById('feedbackSection').style.display = 'block';
+                // If "Unhappy" is selected, show the beverage section as well
+                showBeverageSection();
+            }
+
+            // Function to hide the feedback section
+            function hideFeedbackSection() {
+                document.getElementById('feedbackSection').style.display = 'none';
+            }
+
+            // Function to show the beverage section
+            function showBeverageSection() {
+                document.getElementById('beverageSection').classList.add('show');
+            }
+
+            // Function to hide the beverage section
+            function hideBeverageSection() {
+                document.getElementById('beverageSection').classList.remove('show');
+            }
+
+            // Function to handle the selection of beverages
+            function selectBeverage(beverage) {
+                // Handle the selection of beverages here
+            }
+
+            // Function to submit the form data
+            function submitForm() {
+                const form = document.getElementById('submitForm');
+
+                const scriptURL = 'https://script.google.com/macros/s/AKfycbz0E8qEEP8Lapdjgdm_gW40mDW0Pn576w5loF89fNlRopFuFf4Sd9rt7nH8rYScAfRQ/exec';
+                fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+                    .then(response => {
+                        console.log('Success!', response);
+                       
+                        // Redirect to the "Thank you for submission" page after a delay
+                        setTimeout(function () {
+                            window.location.href = 'thankyou.html'; // Replace with the actual path
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error!', error.message);
+                        // Show error message if needed
+                        successMessage.innerText = 'Failed to submit the form. Please try again.';
+                    });
+            }
+          
+        </script>
+        
+        <!-- Add an element for success message -->
+        <p id="successMessage"></p>
+    
+        </script>
+        
+               
+
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
+    </div>
+</body>
+
+</html>

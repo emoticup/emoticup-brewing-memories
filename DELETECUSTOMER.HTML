@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Customer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            margin-top: 70px;
+        }
+
+        h2 {
+            color: black;
+            margin-bottom: 30px;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: larger;
+        }
+
+        form {
+            background-color:lemonchiffon;
+            border-radius: 10px;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            
+        }
+
+        .form-label {
+            font-weight: bold;
+        }
+
+        .form-control {
+            border-radius: 5px;
+            
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border: none;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        header img {
+    position: absolute; /* Position the image absolutely */
+    top: 10px; /* Adjust the top margin */
+    left: 10px; /* Position the image at the left margin */
+    width: 190px; /* Set the width */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 50%; /* Apply border radius */
+    z-index: 1; /* Ensure the image stays above other elements */
+}
+
+
+        footer {
+            background-color: grey;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <img src="emoticuplogo.png" alt="Company Logo">
+    </header>
+<div class="container text-center">
+    <h2>Delete Customer</h2>
+    <form id="delete-customer-form">
+        <div class="mb-3">
+            <label for="companyName" class="form-label">Company Name</label>
+            <input type="text" class="form-control" id="companyName" placeholder="Enter company name" required>
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" placeholder="Enter email" required>
+        </div>
+        <button type="submit" class="btn btn-danger">Delete Customer</button>
+    </form>
+</div>
+<a href="OPTIONSforadminportal.html" class="btn btn-success" style="position: fixed; bottom: 20px; left: 20px;">Back</a>
+<script>
+   document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('delete-customer-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        deleteCustomer();
+    });
+});
+
+// Function to delete customer
+function deleteCustomer() {
+    const companyName = document.getElementById('companyName').value.trim();
+    const email = document.getElementById('email').value.trim();
+
+    // Retrieve customer profiles from localStorage
+    let customerProfiles = JSON.parse(localStorage.getItem('customerProfiles')) || [];
+
+    // Check if the provided company name and email match any existing customer profile
+    const index = customerProfiles.findIndex(profile => profile.companyname === companyName && profile.email === email);
+
+    if (index !== -1) {
+        // If a match is found, remove the customer profile from the array
+        customerProfiles.splice(index, 1);
+        localStorage.setItem('customerProfiles', JSON.stringify(customerProfiles));
+        alert('Customer deleted successfully.');
+
+        // Clear form fields
+        document.getElementById('delete-customer-form').reset();
+    } else {
+        // If no match is found, display an alert indicating that the customer was not found
+        alert('Customer not found.');
+    }
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 100px auto;
+            padding: 70px;
+            background-color:skyblue;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: white;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        td {
+            background-color: #fff;
+        }
+        .proceed-btn {
+    position: fixed;
+    bottom: 55px;
+    right: 20px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 16px;
+}
+
+.proceed-btn:hover {
+    background-color: #218838;
+}
+.back-button {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: #28a745; /* Green background color */
+    color: white; /* White text color */
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    text-decoration: none; /* Remove underline from the link */
+}
+
+.back-button:hover {
+    background-color: #218838; /* Darker green color on hover */
+}
+header img {
+            width: 250px;
+            height: 150px;
+            border-radius: 50%;
+        }
+
+        #company-logo {
+            max-width: 500px;
+            max-height: 300px;
+            border-radius: 8px;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img id="company-logo" src="emoticuplogo.png" alt="Company Logo"> 
+    </header>
+    <div class="container">
+        <h1>Company Details</h1>
+        <table>
+            <tr>
+                <th>Email</th>
+                <th>Demo Start Date</th>
+                <th>Demo End Date</th>
+            </tr>
+            <tbody id="company-details"></tbody>
+        </table>
+    </div>
+    
+    <button type="submit" class="btn btn-success proceed-btn">
+        <a href="feedback - form.html" style="text-decoration: none; color: inherit;">Proceed</a>
+    </button>
+    <!-- Button to redirect to next page -->
+<a href="companyoption2.html" class="back-button" style="position: fixed; bottom: 70px; left: 20px;">Back</a>
+    <script>
+        // Function to retrieve URL parameters
+        function getUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                
+                email: params.get('email'),
+                demoStartDate: params.get('demoStartDate'),
+                demoEndDate: params.get('demoEndDate')
+            };
+        }
+
+        // Function to display company details
+        function displayCompanyDetails() {
+            const { email, demoStartDate, demoEndDate } = getUrlParams();
+            const companyDetailsTable = document.getElementById('company-details');
+            companyDetailsTable.innerHTML = `
+                <tr>
+                  
+                    <td>${email}</td>
+                    <td>${demoStartDate}</td>
+                    <td>${demoEndDate}</td>
+                </tr>
+            `;
+        }
+
+        // Call the displayCompanyDetails function when the page loads
+        window.onload = displayCompanyDetails;
+    </script>
+</body>
+</html>

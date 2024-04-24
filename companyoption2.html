@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>User Portal - Select Company</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: white; /* Change background color */
+        }
+
+        header {
+            background-color:white; /* Dark background color */
+            color: #fff; /* Light text color */
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .container {
+            margin-top: 80px;
+            padding: 70px;
+            background-color:peachpuff;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+           width: 60%;
+        }
+
+        .form-control {
+            width: 50%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border: none;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        .dropdown-menu {
+            width: 70%;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .dropdown-item {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .proceed-btn {
+            position: fixed;
+            bottom: 70px;
+            right: 20px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+        }
+
+        .proceed-btn:hover {
+            background-color: #218838;
+        }
+
+        footer {
+            background-color: #343a40;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        #searchCompany {
+            width: 90%;
+        }
+
+        header img {
+            width: 250px;
+            height: 150px;
+            border-radius: 50%;
+        }
+
+        #company-logo {
+            max-width: 200px;
+            max-height: 100px;
+            border-radius: 8px;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 1;
+        }
+        .back-button {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: #28a745; /* Green background color */
+    color: white; /* White text color */
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    text-decoration: none; /* Remove underline from the link */
+}
+
+.back-button:hover {
+    background-color: #218838; /* Darker green color on hover */
+}
+ p{
+    font-family: 'Times New Roman', Times, serif;
+    font-size: larger;
+    font-style: italic;
+    color:black;
+    font-weight: bold;
+ }  </style>
+</head>
+
+<body>
+    <header>
+        <img id="company-logo" src="emoticuplogo.png" alt="Company Logo"> 
+    </header>
+
+    <div class="container">
+        <div class="row justify-content-center mb-3">
+            <div class="col-md-6">
+                <input id="searchCompany" type="text" class="form-control" placeholder="Search Company">
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <form class="col-auto text-center">
+                <p>You can search a company to select below:</p>
+                <div class="dropdown mb-3">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="existing-dropdown-btn" data-bs-toggle="dropdown" aria-expanded="false">
+                        Select Company
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="existing-dropdown-btn" id="existing-dropdown-menu">
+                        <!-- Existing company names will be dynamically added here -->
+                    </ul>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2017 emoticup.| All rights reserved.
+    </footer>
+
+    <!-- Button to redirect to next page -->
+<a href="index.html" class="back-button" style="position: fixed; bottom: 70px; left: 20px;">Back</a>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchCompany');
+            const dropdownMenu = document.getElementById('existing-dropdown-menu');
+            const existingCompanyNames = JSON.parse(localStorage.getItem('existingCompanyNames')) || [];
+
+            function updateDropdownMenu() {
+                dropdownMenu.innerHTML = '';
+                const searchQuery = searchInput.value.trim().toLowerCase();
+                const filteredCompanies = existingCompanyNames.filter(company => company.toLowerCase().includes(searchQuery));
+                filteredCompanies.forEach(company => {
+                    const listItem = document.createElement('li');
+                    const link = document.createElement('a');
+                    link.classList.add('dropdown-item');
+                    link.href = '#';
+                    link.innerText = company;
+                    link.addEventListener('click', function() {
+                        displayCompanyDetails(company);
+                    });
+                    listItem.appendChild(link);
+                    dropdownMenu.appendChild(listItem);
+                });
+                if (filteredCompanies.length === 0) {
+                    const listItem = document.createElement('li');
+                    listItem.classList.add('dropdown-item');
+                    listItem.innerText = 'No matching company found';
+                    dropdownMenu.appendChild(listItem);
+                }
+            }
+
+            searchInput.addEventListener('input', updateDropdownMenu);
+            updateDropdownMenu();
+        });
+
+        function displayCompanyDetails(company) {
+            const companyProfiles = JSON.parse(localStorage.getItem('customerProfiles')) || [];
+            const selectedProfile = companyProfiles.find(profile => profile.companyname === company);
+            if (selectedProfile) {
+                const email = selectedProfile.email;
+                const demoStartDate = selectedProfile.demoStartDate;
+                const demoEndDate = selectedProfile.demoEndDate;
+                window.location.href = `nextp-user.html?email=${email}&demoStartDate=${demoStartDate}&demoEndDate=${demoEndDate}`;
+            } else {
+                alert('Company details not found.');
+            }
+        }
+    </script>
+</body>
+
+</html>

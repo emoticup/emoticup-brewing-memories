@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Customer Data</title>
+<style>
+    body {
+            background-color: #fff; /* White background */
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+    margin-top: 10px; /* Add some top margin */
+    width: 80%; /* Adjusted container width */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Minimum full height */
+    background-color:white; /* Semi-transparent blue background */
+    border-radius: 20px; /* Rounded corners */
+    padding: 30px; /* Padding */
+    margin-bottom: 90px;
+}
+
+
+        .card {
+    background-color: lemonchiffon; /* Semi-transparent blue background */
+    border-radius: 20px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow */
+    padding: 30px; /* Padding */
+    max-width: 1000px; /* Adjusted max-width */
+    width: 80%; /* Adjusted width */
+    min-height: 20vh; /* Minimum full height */
+    margin: auto; /* Center the card horizontally */
+}
+
+
+        label {
+            font-weight: bold; /* Make labels bold */
+        }
+
+        .form-control {
+            margin-bottom: 20px;
+        }
+
+        .btn-primary {
+            margin-top: 20px;
+            width: 100%;
+            background-color: #007bff;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        img {
+            border-radius: 8px; /* Add border radius to the image */
+        }
+
+        h1 {
+            color: black; /* Change the color of the h1 element */
+            margin-bottom: 10px; /* Add some bottom margin */
+            font-family: 'Times New Roman', Times, serif;
+            font-weight: bold;
+            font-size: x-large;
+        }
+
+        header {
+            text-align: center; /* Center the content horizontally */
+            margin-bottom: 20px;
+        }
+
+        header img 
+             {
+    max-width: 150px;
+    max-height: 150px;
+    margin: 10px; /* Adjust margin as needed */
+    position: absolute; /* Position absolutely */
+    top: 10px; /* Distance from top */
+    left: 10px; /* Distance from left */
+    border-radius: 8px;
+    transform: scale(1.5); /* Zoom in effect */
+}
+
+
+
+        footer {
+            background-color: grey;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+       
+</style>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<header>
+    <img src="emoticuplogo.png" alt="Company Logo">
+</header>
+<div class="container text-center">
+    <br>
+   
+    <br>
+    <div class="card mx-auto" style="width: 18rem;">
+        <div class="card-body">
+            <form name="submit-to-google-sheet">
+                <div class="mb-3">
+                    <label for="displayCompanyName">Company Name</label>
+                    <input id="companyname" name="companyname" type="text" class="form-control" placeholder="Company Name" required>
+                </div>
+                <div class="mb-3">
+                    <label for="displayCompanyName">Email</label>
+                    <input name="email" type="email" class="form-control" placeholder="Email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="displayCompanyName">Demo Start Date</label>
+                    <input name="demo start date" type="date" class="form-control" placeholder="enter demo start date" required>
+                </div>
+                <div class="mb-3">
+                    <label for="displayCompanyName">Demo End Date</label>
+                    <input name="demo end date" type="date" class="form-control" placeholder="enter demo end date" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+   
+
+    <br>
+    <div class="row justify-content-end">
+        <form class="col-auto">
+            <!-- Add a search input field with Bootstrap Typeahead -->
+    <div class="mb-3">
+        <label for="searchCompany">Search Company</label>
+        <input id="searchCompany" type="text" class="form-control" placeholder="Search Company">
+    </div>
+            <div class="dropdown mb-3">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="existing-dropdown-btn" data-bs-toggle="dropdown" aria-expanded="false">
+                    Select existing Company
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="existing-dropdown-btn" id="existing-dropdown-menu">
+                    <!-- Existing company names will be dynamically added here -->
+                </ul>
+            </div>
+        </form>
+    </div>
+    <button class="btn btn-success" onclick="redirectToNextPage()" style="position: fixed; bottom: 20px; left: 20px;">Back</button>
+</div>
+
+</div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+ document.addEventListener('DOMContentLoaded', function() {
+    const form = document.forms['submit-to-google-sheet'];
+    const companyNameInput = document.getElementById('companyname');
+    let existingCompanyNames = JSON.parse(localStorage.getItem('existingCompanyNames')) || [];
+
+    // Call updateDropdownMenu() when the page loads to populate the dropdown menu
+    updateDropdownMenu();
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const companyName = companyNameInput.value.trim();
+        const email = form.email.value.trim();
+        const demoStartDate = form['demo start date'].value;
+        const demoEndDate = form['demo end date'].value;
+
+        // Check if the company name and email combination already exist
+        const customerProfiles = JSON.parse(localStorage.getItem('customerProfiles')) || [];
+        const existingProfileIndex = customerProfiles.findIndex(profile =>
+            profile.companyname === companyName && profile.email === email
+        );
+
+        if (existingProfileIndex !== -1) {
+            // If the entry already exists, show an alert and return without registering
+            alert('Company already registered with this email. Please use a different email or contact support.');
+            return;
+        }
+
+        // Proceed with the registration process as before
+        // Add the new entry to localStorage
+        const customerProfile = {
+            companyname: companyName,
+            email: email,
+            demoStartDate: demoStartDate,
+            demoEndDate: demoEndDate
+        };
+        customerProfiles.push(customerProfile);
+        localStorage.setItem('customerProfiles', JSON.stringify(customerProfiles));
+
+        // Add the company name to existingCompanyNames
+        existingCompanyNames.push(companyName);
+        localStorage.setItem('existingCompanyNames', JSON.stringify(existingCompanyNames));
+
+        // Update dropdown menu after adding a new company
+        updateDropdownMenu();
+
+        form.reset();
+        alert('Customer registered successfully!');
+    });
+
+
+
+
+
+
+    
+        document.getElementById('show-existing-btn').addEventListener('click', function() {
+            // Update dropdown menu when the button is clicked
+            updateDropdownMenu();
+        });
+    
+        function updateDropdownMenu() {
+            const dropdownMenu = document.getElementById('existing-dropdown-menu');
+            dropdownMenu.innerHTML = '';
+    
+            existingCompanyNames.forEach(company => {
+                const listItem = document.createElement('li');
+                const link = document.createElement('a');
+                link.classList.add('dropdown-item');
+                link.href = '#';
+                link.innerText = company;
+                link.addEventListener('click', function() {
+                    displayCompanyDetails(company);
+                });
+                listItem.appendChild(link);
+                dropdownMenu.appendChild(listItem);
+            });
+        }
+    });
+    
+    function displayCompanyDetails(company) {
+        const companyProfiles = JSON.parse(localStorage.getItem('customerProfiles')) || [];
+        const selectedProfile = companyProfiles.find(profile => profile.companyname === company);
+    
+        if (selectedProfile) {
+            const email = selectedProfile.email;
+            const demoStartDate = selectedProfile.demoStartDate;
+            const demoEndDate = selectedProfile.demoEndDate;
+    
+            // Redirect to the next page with URL parameters
+            window.location.href = `nextpage.html?email=${email}&demoStartDate=${demoStartDate}&demoEndDate=${demoEndDate}`;
+        } else {
+            alert('Company details not found.');
+        }
+    }
+    
+    function redirectToNextPage() {
+        window.location.href = 'OPTIONSforadminportal.html';
+    }
+    
+    const demoStartDateInput = document.querySelector('input[name="demo start date"]');
+    const today = new Date().toISOString().split('T')[0];
+    demoStartDateInput.min = today;
+    
+    const demoEndDateInput = document.querySelector('input[name="demo end date"]');
+    demoEndDateInput.min = today;
+    
+    
+
+
+    // Redirect to the next page with URL parameters
+    window.location.href = `nextpage.html?email=${email}&demoStartDate=${demoStartDate}&demoEndDate=${demoEndDate}`;
+    </script>
+    <script>
+      
+document.addEventListener('DOMContentLoaded', function() {
+    // Add event listener to the "Delete this customer" button
+    document.getElementById('delete-customer-btn').addEventListener('click', deleteCustomer);
+
+    /// Function to delete customer
+    function deleteCustomer() {
+        const companyName = document.querySelector('#searchCompany').value.trim();
+        const email = document.forms['submit-to-google-sheet'].email.value.trim();
+
+        if (!companyName || !email) {
+            alert('Please enter both company name and email to delete the customer.');
+            return;
+        }
+
+        const customerProfiles = JSON.parse(localStorage.getItem('customerProfiles')) || [];
+        const index = customerProfiles.findIndex(profile => profile.companyname === companyName && profile.email === email);
+
+        if (index !== -1) {
+            // Remove the entry from customerProfiles
+            customerProfiles.splice(index, 1);
+            localStorage.setItem('customerProfiles', JSON.stringify(customerProfiles));
+
+            // Remove the company name from existingCompanyNames
+            const existingIndex = existingCompanyNames.indexOf(companyName);
+            if (existingIndex !== -1) {
+                existingCompanyNames.splice(existingIndex, 1);
+                localStorage.setItem('existingCompanyNames', JSON.stringify(existingCompanyNames));
+            }
+
+            alert('Customer deleted successfully.');
+            // Redirect or perform any other action as needed
+        } else {
+            alert('Customer not found.');
+        }
+    }
+
+
+    // Other functions for adding new customer, searching, etc.
+});
+</script>
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchCompany');
+            const dropdownMenu = document.getElementById('existing-dropdown-menu');
+            const existingCompanyNames = JSON.parse(localStorage.getItem('existingCompanyNames')) || [];
+        
+            // Function to update the dropdown menu based on search query
+            function updateDropdownMenu() {
+                // Clear existing items from the dropdown menu
+                dropdownMenu.innerHTML = '';
+        
+                // Get search query
+                const searchQuery = searchInput.value.trim().toLowerCase();
+        
+                // Filter existing company names based on search query
+                const filteredCompanies = existingCompanyNames.filter(company => company.toLowerCase().includes(searchQuery));
+        
+                // Add filtered company names to the dropdown menu
+                filteredCompanies.forEach(company => {
+                    const listItem = document.createElement('li');
+                    const link = document.createElement('a');
+                    link.classList.add('dropdown-item');
+                    link.href = '#';
+                    link.innerText = company;
+                    link.addEventListener('click', function() {
+                        displayCompanyDetails(company);
+                    });
+                    listItem.appendChild(link);
+                    dropdownMenu.appendChild(listItem);
+                });
+        
+                // If no matching company found, display a message
+                if (filteredCompanies.length === 0) {
+                    const listItem = document.createElement('li');
+                    listItem.classList.add('dropdown-item');
+                    listItem.innerText = 'No matching company found';
+                    dropdownMenu.appendChild(listItem);
+                }
+            }
+        
+            // Update dropdown menu when the search input changes
+            searchInput.addEventListener('input', updateDropdownMenu);
+        
+            // Update dropdown menu when the page loads
+            updateDropdownMenu();
+        });
+        </script>
+        
+    
+    
+    <script>
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwr91jUU0Yh9FyAKb6tsC1WyuU546gFQYKenkqbO5oJaO4GTCtygtT4PTwelyYcbvYf/exec'
+        const form = document.forms['submit-to-google-sheet']
+        form.addEventListener('submit', e => {
+        e.preventDefault()
+        fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+        .then(response => console.log('Success!', response))
+        .catch(error => console.error('Error!', error.message))
+        })
+    </script>
+</body>
+</html>
